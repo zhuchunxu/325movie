@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zcx.dao.MovieDao">
+<resultMap type="com.zcx.domain.Movie" id="MovieMap">
+	<id property="id" column="id"/>
+	<result property="name" column="name"/>
+	<result property="author" column="author"/>
+	<result property="price" column="price"/>
+	<result property="created" column="created"/>
+	<result property="time" column="time"/>
+	<result property="type" column="type"/>
+	<result property="address" column="address"/>
+	<result property="zhuangtai" column="zhuangtai"/>
+	<association property="y" javaType="com.zcx.domain.Year">
+		<id property="id" column="id"/>
+		<result property="year" column="year"/>
+	</association>
+</resultMap>
+
+
+	<select id="getList" resultMap="MovieMap">
+		SELECT * from movie m
+		LEFT JOIN year y
+		on m.`year` = y.id
+
+			<if test="px1!=null and px1!=''">
+				order by m.created 
+				<if test="px1==1">
+				desc
+				</if>
+				
+			</if>
+			
+			<if test="px2!=null and px2!=''">
+				order by m.time 
+				<if test="px2==1">
+				desc
+				</if>
+			</if>
+			
+			<if test="px3!=null and px3!=''">
+				order by m.year 
+				<if test="px3==1">
+				desc
+				</if>
+			</if>
+		<where>
+			<if test="name!=null and name!=''">
+				m.name like '%${name}%'
+			</if>
+			<if test="author!=null and author!=''">
+			 	and	 m.author like '%${author}%'
+			</if>
+			<if test="year!=null and year!=''">
+			 	and	 m.year = #{year}
+			</if>
+			<if test="sprice!=null and sprice!=''">
+			 	and	price> #{sprice}
+			</if>
+			<if test="eprice!=null and eprice!=''">
+			 	and	price &lt; #{eprice}
+			</if>
+			<if test="screated!=null and screated!=''">
+			 	and	created> #{screated}
+			</if>
+			<if test="eprice!=null and eprice!=''">
+			 	and	created &lt; #{ecreated}
+			</if>
+			<if test="stime!=null and stime!=''">
+			 	and	time> #{stime}
+			</if>
+			<if test="etime!=null and etime!=''">
+			 	and	time &lt; #{etime}
+			</if>
+		</where>
+			
+	
+		
+	</select>	
+	<delete id="del">
+		delete from movie where id in(${ids})
+	</delete>
+	
+	<update id="update">
+		update movie set zhuangtai=#{zhuangtai} where id=#{id}
+	</update>
+
+</mapper>
